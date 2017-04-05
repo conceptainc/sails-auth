@@ -1,8 +1,5 @@
 # sails-auth
 
-[![Looking for maintainers][hacktober-image]][hacktober-url]
-
-
 [![NPM version][npm-image]][npm-url]
 [![Build status][travis-image]][travis-url]
 [![Dependency Status][daviddm-image]][daviddm-url]
@@ -64,7 +61,7 @@ For comprehensive user account control with role-based permissioning, object own
 ## License
 MIT
 
-## Maintained By
+## Originally Maintained By
 [<img src='http://i.imgur.com/Y03Jgmf.png' height='64px'>](http://langa.io)
 - [Travis Webb](https://github.com/tjwebb)
 - [Ryan Quinn](https://github.com/ryanwilliamquinn)
@@ -72,9 +69,3 @@ MIT
 
 [npm-image]: https://img.shields.io/npm/v/sails-auth.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/sails-auth
-[travis-image]: https://img.shields.io/travis/langateam/sails-auth.svg?style=flat-square
-[travis-url]: https://travis-ci.org/langateam/sails-auth
-[daviddm-image]: http://img.shields.io/david/langateam/sails-auth.svg?style=flat-square
-[daviddm-url]: https://david-dm.org/langateam/sails-auth
-[hacktober-image]: http://i.imgur.com/FM9yVCI.png
-[hacktober-url]: https://twitter.com/langateam/status/782995392212369408

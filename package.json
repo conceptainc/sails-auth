@@ -1,6 +1,6 @@
 {
-  "name": "sails-auth",
-  "version": "2.2.0",
+  "name": "@inspire-platform/sails-auth",
+  "version": "0.0.0",
   "description": "Passport-based User Authentication system for sails.js applications.",
   "main": "dist/api/hooks/auth/index.js",
   "scripts": {
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/tjwebb/sails-auth.git"
+    "url": "git://github.com/conceptainc/sails-auth.git"
   },
   "keywords": [
     "sails",
@@ -29,12 +29,15 @@
     "instagram",
     "youtube"
   ],
-  "author": "Travis Webb <me@traviswebb.com>",
+  "author": "Marshall Sorenson <marshall@conceptsol.com>",
+  "contributors": [
+    "Travis Webb <me@traviswebb.com>"
+  ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/tjwebb/sails-auth/issues"
+    "url": "https://github.com/conceptainc/sails-auth/issues"
   },
-  "homepage": "https://github.com/tjwebb/sails-auth",
+  "homepage": "https://github.com/conceptainc/sails-auth",
   "dependencies": {
     "base64url": "^2.0.0",
     "bcryptjs": "^2.2",
