@@ -1,6 +1,6 @@
 {
   "name": "@inspire-platform/sails-auth",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Passport-based User Authentication system for sails.js applications.",
   "main": "dist/api/hooks/auth/index.js",
   "scripts": {
