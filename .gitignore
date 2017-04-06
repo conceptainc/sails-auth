@@ -5,6 +5,7 @@ dist/
 logs
 *.log
 .idea/
+nbproject/
 
 # Runtime data
 pids
