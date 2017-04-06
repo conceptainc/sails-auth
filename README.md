@@ -1,4 +1,4 @@
-# sails-auth
+# @inspire-platform/sails-hook-auth
 
 [![NPM version][npm-image]][npm-url]
 [![Build status][travis-image]][travis-url]
@@ -8,9 +8,9 @@
 
 ## 1. Install
 ```sh
-$ npm install sails-auth --save
+$ npm install @inspire-platform/sails-hook-auth --save
 ```
-This will install `sails-auth` as a Sails Hook. The Hook uses
+This will install `@inspire-platform/sails-hook-auth` as a Sails Hook. The Hook uses
 [marlinspike](https://github.com/tjwebb/marlinspike) to inject the relevant
 Controllers, Policies, etc into your Sails application.
 
@@ -61,11 +61,9 @@ For comprehensive user account control with role-based permissioning, object own
 ## License
 MIT
 
-## Originally Maintained By
-[<img src='http://i.imgur.com/Y03Jgmf.png' height='64px'>](http://langa.io)
+## Upstream Project Maintained By
 - [Travis Webb](https://github.com/tjwebb)
 - [Ryan Quinn](https://github.com/ryanwilliamquinn)
-- [Contributors](https://github.com/langateam/sails-auth/graphs/contributors)
 
-[npm-image]: https://img.shields.io/npm/v/sails-auth.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/sails-auth
+[npm-image]: https://img.shields.io/npm/v/@inspire-platform/sails-hook-auth.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/@inspire-platform/sails-hook-auth

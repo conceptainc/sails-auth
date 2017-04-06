@@ -1,5 +1,5 @@
 {
-  "name": "@inspire-platform/sails-auth",
+  "name": "@inspire-platform/sails-hook-auth",
   "version": "0.0.0",
   "description": "Passport-based User Authentication system for sails.js applications.",
   "main": "dist/api/hooks/auth/index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/conceptainc/sails-auth.git"
+    "url": "git://github.com/conceptainc/sails-hook-auth.git"
   },
   "keywords": [
     "sails",
@@ -35,9 +35,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/conceptainc/sails-auth/issues"
+    "url": "https://github.com/conceptainc/sails-hook-auth/issues"
   },
-  "homepage": "https://github.com/conceptainc/sails-auth",
+  "homepage": "https://github.com/conceptainc/sails-hook-auth",
   "dependencies": {
     "base64url": "^2.0.0",
     "bcryptjs": "^2.2",
