@@ -3,35 +3,50 @@ var crypto = require('crypto');
 
 /** @module User */
 module.exports = {
+
+  primaryKey: 'id',
+
   attributes: {
+    id: {
+      type: 'number',
+      unique: true,
+      autoIncrement: true
+    },
     username: {
       type: 'string',
+      required: true,
       unique: true,
-      index: true,
-      notNull: true
+      minLength: 3
     },
     email: {
-      type: 'email',
+      type: 'string',
+      required: true,
       unique: true,
-      index: true
+      isEmail: true
     },
     passports: {
       collection: 'Passport',
       via: 'user'
     },
-
-    getGravatarUrl: function () {
-      var md5 = crypto.createHash('md5');
-      md5.update(this.email || '');
-      return 'https://gravatar.com/avatar/'+ md5.digest('hex');
+    createdAt: {
+      type: 'string',
+      autoCreatedAt: true
     },
-
-    toJSON: function () {
-      var user = this.toObject();
-      delete user.password;
-      user.gravatarUrl = this.getGravatarUrl();
-      return user;
+    updatedAt: {
+      type: 'string',
+      autoUpdatedAt: true
     }
+
+  },
+
+  customToJSON: function () {
+    return _.pick(this, [
+      'id',
+      'username',
+      'email',
+      'createdAt',
+      'updatedAt'
+    ]);
   },
 
   beforeCreate: function (user, next) {

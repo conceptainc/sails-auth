@@ -113,14 +113,14 @@ if (sails.services.passport) {
           //           authentication provider.
           // Action:   Create a new user and assign them a passport.
           if (!passport) {
-            return sails.models.user.create(user)
+            return sails.models.user.create(user).meta({fetch: true})
               .then(function (_user) {
                 user = _user;
                 return sails.models.passport.create(_.extend({
                   user: user.id
                 }, query));
               })
-              .then(function (passport) {
+              .then(function () {
                 next(null, user);
               })
               .catch(next);
@@ -155,7 +155,7 @@ if (sails.services.passport) {
             return sails.models.passport.create(_.extend({
                 user: req.user.id
               }, query))
-              .then(function (passport) {
+              .then(function () {
                 next(null, req.user);
               })
               .catch(next);
@@ -339,7 +339,7 @@ if (sails.services.passport) {
         user: user.id
       })
       .then(function (passport) {
-        return sails.models.passport.destroy(passport.id);
+        return sails.models.passport.destroy({id: passport.id});
       })
       .then(function (error) {
         next(null, user);

@@ -21,14 +21,15 @@
  * @param {Object}   res
  * @param {Function} next
  */
-var http = require('http'),
-  passport = sails.services.passport,
-  _ = require('lodash');
-  
-var methods = ['login', 'logIn', 'logout', 'logOut', 'isAuthenticated', 'isUnauthenticated'];
+
 
 module.exports = function (req, res, next) {
-  
+
+  var http = require('http'),
+    passport = sails.services.passport,
+    _ = require('lodash');
+
+  var methods = ['login', 'logIn', 'logout', 'logOut', 'isAuthenticated', 'isUnauthenticated'];
 
   // Initialize Passport
   passport.initialize()(req, res, function () {

@@ -59,20 +59,23 @@ exports.createUser = function (_user, next) {
     , password : password
     , user     : user.id
     , accessToken: accessToken
-    }, function (err, passport) {
+    }, function (err) {
       if (err) {
         if (err.code === 'E_VALIDATION') {
           err = new SAError({originalError: err});
         }
         
-        return user.destroy(function (destroyErr) {
-          next(destroyErr || err);
-        });
+        return User.destroy(
+          {id: user.id},
+          function (destroyErr) {
+            next(destroyErr || err);
+          }
+        );
       }
 
       next(null, user);
     });
-  });
+  }, {fetch: true});
 };
 
 /**
@@ -110,24 +113,25 @@ exports.updateUser = function (_user, next) {
         protocol : 'local'
         ,user:user.id
       }, function(err, passport){
-        passport.password = password;
-        passport.save(function (err, passport) {
-          if (err) {
-            if (err.code === 'E_VALIDATION') {
-              err = new SAError({ originalError: err });
+        Passport
+          .update({id: passport.id}, {password: password})
+          .exec(function (err) {
+            if (err) {
+              if (err.code === 'E_VALIDATION') {
+                err = new SAError({ originalError: err });
+              }
+
+              next(err);
+
             }
 
-            next(err);
-
-          }
-
-          next(null, user);
-        })
+            next(null, user);
+          })
       });
     } else {
       next(null, user);
     }
-  });
+  }, {fetch: true});
 };
 
 /**
@@ -159,7 +163,7 @@ exports.connect = function (req, res, next) {
         protocol : 'local'
       , password : password
       , user     : user.id
-      }, function (err, passport) {
+      }, function (err) {
         next(err, user);
       });
     }
@@ -212,7 +216,7 @@ exports.login = function (req, identifier, password, next) {
     , user     : user.id
     }, function (err, passport) {
       if (passport) {
-        passport.validatePassword(password, function (err, res) {
+        Passport.validatePassword(passport, password, function (err, res) {
           if (err) {
             return next(err);
           }
