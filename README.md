@@ -1,8 +1,6 @@
 # @inspire-platform/sails-hook-auth
 
 [![NPM version][npm-image]][npm-url]
-[![Build status][travis-image]][travis-url]
-[![Dependency Status][daviddm-image]][daviddm-url]
 
 [Passport](http://passportjs.org/)-based User Authentication system for Sails.js applications.
 
@@ -10,9 +8,7 @@
 ```sh
 $ npm install @inspire-platform/sails-hook-auth --save
 ```
-This will install `@inspire-platform/sails-hook-auth` as a Sails Hook. The Hook uses
-[marlinspike](https://github.com/tjwebb/marlinspike) to inject the relevant
-Controllers, Policies, etc into your Sails application.
+This will install `@inspire-platform/sails-hook-auth` as a Sails Hook.
 
 ## 2. Configure
 
