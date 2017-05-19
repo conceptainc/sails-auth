@@ -23,10 +23,9 @@ module.exports = {
     delete req.session.passport;
     req.session.authenticated = false;
 
-    if (!req.isSocket) {
-      res.redirect(req.query.next || '/');
-    }
-    else {
+    if (!req.isSocket && req.query.next) {
+      res.redirect(req.query.next);
+    } else {
       res.ok();
     }
   },
