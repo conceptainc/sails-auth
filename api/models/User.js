@@ -29,11 +29,11 @@ module.exports = {
       via: 'user'
     },
     createdAt: {
-      type: 'string',
+      type: 'number',
       autoCreatedAt: true
     },
     updatedAt: {
-      type: 'string',
+      type: 'number',
       autoUpdatedAt: true
     }
 
