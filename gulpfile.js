@@ -1,4 +1,5 @@
 var gulp = require("gulp");
+var watch = require("gulp-watch");
 var babel = require("gulp-babel");
 
 gulp.task("default", function () {
@@ -13,4 +14,8 @@ gulp.task("default", function () {
   gulp.src("config/**")
     .pipe(babel())
     .pipe(gulp.dest("dist/config"));
+});
+
+gulp.task('watch', function () {
+   gulp.watch(['api/**', 'config/**'], ['default']);
 });
