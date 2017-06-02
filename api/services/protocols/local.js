@@ -202,12 +202,6 @@ exports.login = function (req, identifier, password, next) {
     }
 
     if (!user) {
-      if (isEmail) {
-        req.flash('error', 'Error.Passport.Email.NotFound');
-      } else {
-        req.flash('error', 'Error.Passport.Username.NotFound');
-      }
-
       return next(null, false);
     }
 
@@ -222,7 +216,6 @@ exports.login = function (req, identifier, password, next) {
           }
 
           if (!res) {
-            req.flash('error', 'Error.Passport.Password.Wrong');
             return next(null, false);
           } else {
             return next(null, user, passport);
@@ -230,7 +223,6 @@ exports.login = function (req, identifier, password, next) {
         });
       }
       else {
-        req.flash('error', 'Error.Passport.Password.NotSet');
         return next(null, false);
       }
     });
