@@ -196,7 +196,8 @@ exports.login = function (req, identifier, password, next) {
     query.username = identifier;
   }
 
-  sails.models.user.findOne(query, function (err, user) {
+  AuthService.findUser(query, function (err, user) {
+
     if (err) {
       return next(err);
     }

@@ -38,6 +38,15 @@ Create users as you normally would (`POST` to `/user`). Authenticate using the e
 Authenticate with the local strategy via a `POST` to `/auth/local` with params
 `identifier` (email) and `password`). This will also create a session. See [passport.local](https://github.com/jaredhanson/passport-local) for more.
 
+* Custom User Lookup
+
+  If you have additional Model(s) which contain User data by which you want to lookup
+  local strategy users, you can override the `AuthService.findUser(query, cb)` method.
+
+  _Make sure you execute the callback!_
+
+  > `return cb(err, user);`
+
 #### HTTP Basic and Digest
 See [passport.http](https://github.com/jaredhanson/passport-http).
 

@@ -16,5 +16,18 @@ module.exports = {
     else {
       return url;
     }
+  },
+
+  /**
+   * Lookup user by username or email.
+   *
+   * @param query.username
+   * @param query.email
+   * @param callback
+   * @returns {*}
+   */
+  findUser: function (query, callback) {
+    return sails.models.user.findOne(query, callback);
   }
+
 };
