@@ -91,15 +91,6 @@ var Passport = {
     identifier : { type: 'string' },
     tokens     : { type: 'json' },
 
-    createdAt: {
-      type: 'number',
-      autoCreatedAt: true
-    },
-    updatedAt: {
-      type: 'number',
-      autoUpdatedAt: true
-    },
-
     // Associations
     //
     // Associate every passport with one, and only one, user. This requires an

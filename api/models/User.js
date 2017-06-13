@@ -27,14 +27,6 @@ module.exports = {
     passports: {
       collection: 'Passport',
       via: 'user'
-    },
-    createdAt: {
-      type: 'number',
-      autoCreatedAt: true
-    },
-    updatedAt: {
-      type: 'number',
-      autoUpdatedAt: true
     }
 
   },
