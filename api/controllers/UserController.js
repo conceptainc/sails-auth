@@ -18,6 +18,10 @@ module.exports = {
   },
 
   update: function (req, res, next) {
+
+    let user = req.body;
+    user.id = req.params.id;
+
     sails.services.passport.protocols.local.update(req.body, function (err, user) {
       if (err) return res.negotiate(err);
 
