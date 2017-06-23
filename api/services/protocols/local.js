@@ -81,19 +81,21 @@ exports.createUser = function (_user, next) {
 /**
  * Update an user
  *
- * This method updates an user based on its id or username if id is not present
- * and assign the newly created user a local Passport.
+ * This method updates an user based on its id,
+ * and updates the password in local Passport (if provided).
  *
- * @param {String}   username
- * @param {String}   email
- * @param {String}   password
+ * @param {Object}   _user
  * @param {Function} next
  */
 exports.updateUser = function (_user, next) {
   var password = _user.password;
   delete _user.password;
 
-  var userFinder = _user.hasOwnProperty('id') ? { id: _user.id } : { username: _user.username };
+  if (true === _user.hasOwnProperty('id')) {
+    var userFinder = {id: _user.id};
+  } else {
+    return next(new Error('A user id is required to update.'));
+  }
 
   return sails.models.user.update(userFinder, _user, function (err, user) {
     if (err) {
