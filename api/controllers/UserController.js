@@ -11,7 +11,18 @@ module.exports = {
    */
   create: function (req, res, next) {
     sails.services.passport.protocols.local.register(req.body, function (err, user) {
-      if (err) return res.negotiate(err);
+
+      if (err) {
+        switch (err.name) {
+          case 'AdapterError':
+            switch (err.code) {
+              case 'E_UNIQUE': return res.badRequest(err);
+              default: return res.serverError(err);
+            } return;
+          case 'UsageError': return res.badRequest(err);
+          default: return res.serverError(err);
+        }
+      }
 
       res.ok(user);
     });
@@ -23,7 +34,18 @@ module.exports = {
     user.id = req.params.id;
 
     sails.services.passport.protocols.local.update(req.body, function (err, user) {
-      if (err) return res.negotiate(err);
+
+      if (err) {
+        switch (err.name) {
+          case 'AdapterError':
+            switch (err.code) {
+              case 'E_UNIQUE': return res.badRequest(err);
+              default: return res.serverError(err);
+            } return;
+          case 'UsageError': return res.badRequest(err);
+          default: return res.serverError(err);
+        }
+      }
 
       res.ok(user);
     });
