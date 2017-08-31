@@ -94,15 +94,21 @@ module.exports = {
 
         req.session.authenticated = true;
 
-        // Upon successful login, optionally redirect the user if there is a
-        // `next` query param
-        if (req.query.next) {
-          var url = sails.services.authservice.buildCallbackNextUrl(req);
-          res.status(302).set('Location', url);
-        }
+        // maybe update last login
+        return sails.models.user.updateLastLogin(user).then(() => {
 
-        sails.log.info('user', user, 'authenticated successfully');
-        return res.json(user);
+          // Upon successful login, optionally redirect the user if there is a
+          // `next` query param
+          if (req.query.next) {
+            var url = sails.services.authservice.buildCallbackNextUrl(req);
+            res.status(302).set('Location', url);
+          }
+
+          sails.log.info('user', user, 'authenticated successfully');
+          return res.json(user);
+
+        });
+
       });
     });
   },

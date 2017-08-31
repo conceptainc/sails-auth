@@ -15,6 +15,9 @@ module.exports = {
       unique: true,
       index: true
     },
+    lastLogin: {
+      type: 'datetime'
+    },
     passports: {
       collection: 'Passport',
       via: 'user'
@@ -52,5 +55,42 @@ module.exports = {
         resolve(created);
       });
     });
+  },
+
+  /**
+   * Update last login if attribute exists on model.
+   *
+   * @param user
+   * @returns {Promise}
+   */
+  updateLastLogin: function (user) {
+    return new Promise((resolve) => {
+      // log last login?
+      if ('lastLogin' in sails.models.user.attributes) {
+        // try to update last login
+        let updateLastLogin =
+          sails.models.user.update({
+            id: user.id
+          },{
+            lastLogin: sails.models.user.makeLastLoginDate()
+          });
+        // all done
+        return resolve(updateLastLogin);
+      } else {
+        return resolve(true);
+      }
+    });
+  },
+
+  /**
+   * Returns formatted date value to use for last login.
+   *
+   * Override this method to customize it for your API's model if necessary.
+   *
+   * @returns {Date}
+   */
+  makeLastLoginDate: function () {
+    return new Date();
   }
+
 };
