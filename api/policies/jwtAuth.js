@@ -13,5 +13,5 @@
  */
 
 module.exports = function (req, res, next) {
-    return passport.authenticate('jwt', { session: false })(req, res, next);
+    return passport.authenticate('jwt', { session: sails.config.auth.passport.jwt.session })(req, res, next);
   };

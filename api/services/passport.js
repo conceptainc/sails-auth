@@ -5,10 +5,6 @@ if (sails.services.passport) {
   var url = require('url');
   var passport = require('passport');
   var _ = require('lodash');
-  var EXPIRES_IN_MINUTES = 60 * 24;
-  var SECRET = process.env.tokenSecret || "INSPIRE-SECRET";
-  var ISSUER = "inspire.com"; //REVIEW
-  var AUDIENCE = sails.config.appUrl;
 
   /**
    * Passport Service
@@ -231,8 +227,7 @@ if (sails.services.passport) {
       } else {
         next(new Error('Invalid action'));
       }
-    }
-    else {
+    } else {
       if (action === 'disconnect' && req.user) {
         this.disconnect(req, res, next);
       } else {
@@ -287,7 +282,6 @@ if (sails.services.passport) {
 
         // Only load the local strategy if it's enabled in the config
         if (strategies.local) {
-
           Strategy = strategies[key].strategy;
 
           passport.use(new Strategy(options, this.protocols.local.login));
@@ -344,7 +338,6 @@ if (sails.services.passport) {
     }, passport));
   };
 
-
   /**
    * Disconnect a passport from a user
    *
@@ -385,4 +378,3 @@ if (sails.services.passport) {
 
   module.exports = passport;
 }
-

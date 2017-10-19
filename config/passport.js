@@ -10,7 +10,7 @@
  * http://passportjs.org/guide/providers/
  */
 
-var SECRET = process.env.tokenSecret || "INSPIRE-SECRET";
+var SECRET = require('./auth').auth.passport.jwt.secret
 
 module.exports.passport = {
   local: {
@@ -27,8 +27,7 @@ module.exports.passport = {
     protocol: 'jwt',
     options: {
       jwtFromRequest: require('passport-jwt').ExtractJwt.fromAuthHeaderWithScheme("JWT"),
-      usernameField: 'identifier',
-      secretOrKey: SECRET,
+      secretOrKey: SECRET
     }
   },
 
