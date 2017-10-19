@@ -10,6 +10,8 @@
  * http://passportjs.org/guide/providers/
  */
 
+var SECRET = process.env.tokenSecret || "INSPIRE-SECRET";
+
 module.exports.passport = {
   local: {
     strategy: require('passport-local').Strategy
@@ -18,6 +20,16 @@ module.exports.passport = {
   basic: {
     strategy: require('passport-http').BasicStrategy,
     protocol: 'basic'
+  },
+
+  jwt: {
+    strategy: require('passport-jwt').Strategy,
+    protocol: 'jwt',
+    options: {
+      jwtFromRequest: require('passport-jwt').ExtractJwt.fromAuthHeaderWithScheme("JWT"),
+      usernameField: 'identifier',
+      secretOrKey: SECRET,
+    }
   },
 
   /*

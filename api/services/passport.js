@@ -5,6 +5,10 @@ if (sails.services.passport) {
   var url = require('url');
   var passport = require('passport');
   var _ = require('lodash');
+  var EXPIRES_IN_MINUTES = 60 * 24;
+  var SECRET = process.env.tokenSecret || "INSPIRE-SECRET";
+  var ISSUER = "inspire.com"; //REVIEW
+  var AUDIENCE = sails.config.appUrl;
 
   /**
    * Passport Service
@@ -227,7 +231,8 @@ if (sails.services.passport) {
       } else {
         next(new Error('Invalid action'));
       }
-    } else {
+    }
+    else {
       if (action === 'disconnect' && req.user) {
         this.disconnect(req, res, next);
       } else {
@@ -268,6 +273,9 @@ if (sails.services.passport) {
       var options = {
         passReqToCallback: true
       };
+      var jwtOptions = {
+        passReqToCallback: true
+      };
       var Strategy;
 
       if (key === 'local') {
@@ -279,9 +287,21 @@ if (sails.services.passport) {
 
         // Only load the local strategy if it's enabled in the config
         if (strategies.local) {
+
           Strategy = strategies[key].strategy;
 
           passport.use(new Strategy(options, this.protocols.local.login));
+        }
+      } else if (key === 'jwt') {
+        // Since we need to allow users to login using both usernames as well as
+        // emails, we'll set the username field to something more generic.
+        _.extend(jwtOptions, strategies.jwt.options);
+
+        // Only load the local strategy if it's enabled in the config
+
+        if (strategies.jwt) {
+          Strategy = strategies[key].strategy;
+          passport.use(new Strategy(jwtOptions, this.protocols.jwt.login));
         }
       } else {
         var protocol = strategies[key].protocol;
@@ -324,6 +344,7 @@ if (sails.services.passport) {
     }, passport));
   };
 
+
   /**
    * Disconnect a passport from a user
    *
@@ -364,3 +385,4 @@ if (sails.services.passport) {
 
   module.exports = passport;
 }
+

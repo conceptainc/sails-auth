@@ -28,6 +28,17 @@ module.exports = {
    */
   findUser: function (query, callback) {
     return sails.models.user.findOne(query, callback);
+  },
+
+  /**
+   * Lookup user by id
+   *
+   * @param query.id
+   * @param callback
+   * @returns {*}
+   */
+  findUserById: function (query, callback) {
+    return sails.models.user.findOne(query, callback);
   }
 
 };

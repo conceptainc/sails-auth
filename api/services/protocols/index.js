@@ -13,6 +13,7 @@
  */
 module.exports = {
   local: require('./local'),
+  jwt: require('./jwt'),
   basic: require('./basic'),
   bearer: require('./bearer'),
   oauth: require('./oauth'),
