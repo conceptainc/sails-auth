@@ -1,22 +1,36 @@
 
-class Auth {
+module.exports = function auth(sails) {
 
-  constructor(sails) {}
+  // scoped config
+  let config = {};
 
-  initialize(next) {
-    sails.services.passport.loadStrategies()
-    next()
-  }
-}
-
-module.exports = function (sails) {
-
-  let auth = new Auth(sails);
-
+  //
+  // Return the hook signature
+  //
   return {
 
+    defaults: {
+      __configKey__: {
+        bcrypt: {
+          rounds: 8
+        },
+        passport: {
+          jwt: {
+            secret: ('PASSPORT_JWT_SECRET' in process.env) ? process.env.PASSPORT_JWT_SECRET : 'INSECURE',
+            session: false
+          }
+        }
+      }
+    },
+
+    configure: function configure() {
+      // set config on scope
+      config = sails.config[this.configKey];
+    },
+
     initialize: function(next) {
-      return auth.initialize(next)
+      sails.services.passport.loadStrategies()
+      return next()
     }
 
   };
