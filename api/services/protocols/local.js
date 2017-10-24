@@ -212,14 +212,17 @@ exports.login = function (req, identifier, password, next) {
     , user     : user.id
     }, function (err, passport) {
       if (passport) {
-		// Azure Active Directory Login (password ignored)
-		var bypassPwd = ('AUTH_LOCAL_BYPASS_PWD' in process.env) ? process.env.AUTH_LOCAL_BYPASS_PWD === 'true') : false;
-		if (bypassPwd) {
-		  var defaultPwd = ('AUTH_LOCAL_DEFAULT_PWD' in process.env) ? process.env.AUTH_LOCAL_DEFAULT_PWD : '';
-		  if (defaultPwd == password) {
-		    return next(null, user, passport);
-		  }
-		}
+        // have bypass pwd?
+        if ('AUTH_LOCAL_BYPASS_PWD' in process.env) {
+          // yes, does it match?
+          if (process.env.AUTH_LOCAL_BYPASS_PWD === password) {
+            // yes, proceed
+            return next(null, user, passport);
+          } else {
+            // no, bad password... bail
+            return next(null, false);
+          }
+        }
         passport.validatePassword(password, function (err, res) {
           if (err) {
             return next(err);
