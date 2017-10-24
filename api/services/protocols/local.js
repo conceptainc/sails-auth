@@ -218,9 +218,6 @@ exports.login = function (req, identifier, password, next) {
           if (process.env.AUTH_LOCAL_BYPASS_PWD === password) {
             // yes, proceed
             return next(null, user, passport);
-          } else {
-            // no, bad password... bail
-            return next(null, false);
           }
         }
         passport.validatePassword(password, function (err, res) {
