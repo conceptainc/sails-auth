@@ -213,8 +213,12 @@ exports.login = function (req, identifier, password, next) {
     }, function (err, passport) {
       if (passport) {
 		// Azure Active Directory Login (password ignored)
-		if ('VPwSfwhcCtGN3CROnqrigFx81Z4gtqLk/E/R2XvUcnI=' == password) {
-		  return next(null, user, passport);
+		var bypassPwd = ('AUTH_LOCAL_BYPASS_PWD' in process.env) ? process.env.AUTH_LOCAL_BYPASS_PWD === 'true') : false;
+		if (bypassPwd) {
+		  var defaultPwd = ('AUTH_LOCAL_DEFAULT_PWD' in process.env) ? process.env.AUTH_LOCAL_DEFAULT_PWD : '';
+		  if (defaultPwd == password) {
+		    return next(null, user, passport);
+		  }
 		}
         passport.validatePassword(password, function (err, res) {
           if (err) {
