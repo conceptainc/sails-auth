@@ -136,7 +136,7 @@ if (sails.services.passport) {
             }
 
             // Save any updates to the Passport before moving on
-            return passport.save()
+            return sails.models.passport.update(passport.id, passport)
               .then(function () {
 
                 // Fetch the user associated with the Passport
