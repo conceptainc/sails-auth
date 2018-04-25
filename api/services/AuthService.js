@@ -27,6 +27,9 @@ module.exports = {
    * @returns {*}
    */
   findUser: function (query, callback) {
+    // force active status check
+    query.active = true;
+    // try to find user
     return sails.models.user.findOne(query, callback);
   }
 
