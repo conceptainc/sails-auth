@@ -19,7 +19,7 @@ module.exports = function(req, token, done) {
       return done(null, false);
     }
 
-    sails.models.user.findOne({id: passport.user}).exec(function(err, user) {
+    sails.services.authservice.findUser({id: passport.user}).exec(function(err, user) {
       if (err) {
         return done(err);
       }

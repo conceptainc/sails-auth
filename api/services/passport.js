@@ -140,7 +140,7 @@ if (sails.services.passport) {
               .then(function () {
 
                 // Fetch the user associated with the Passport
-                return sails.models.user.findOne(passport.user);
+                return sails.services.authservice.findUser(passport.user);
               })
               .then(function (user) {
                 next(null, user);
@@ -353,7 +353,7 @@ if (sails.services.passport) {
   });
 
   passport.deserializeUser(function (id, next) {
-    return sails.models.user.findOne(id)
+    return sails.services.authservice.findUser(id)
       .then(function (user) {
         next(null, user || null);
         return user;
