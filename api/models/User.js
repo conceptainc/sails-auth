@@ -24,6 +24,10 @@ module.exports = {
       unique: true,
       isEmail: true
     },
+    active: {
+      type: 'boolean',
+      defaultsTo: true
+    },
     lastLogin: {
       type: 'number'
     },
