@@ -30,7 +30,11 @@ module.exports = {
     // force active status check
     query.active = true;
     // try to find user
-    return sails.models.user.findOne(query, callback);
+    if (callback) {
+      return sails.models.user.findOne(query, callback);
+    } else {
+      return sails.models.user.findOne(query);
+    }
   }
 
 };
