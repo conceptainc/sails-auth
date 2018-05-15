@@ -130,22 +130,31 @@ if (sails.services.passport) {
           //           connected passport.
           // Action:   Get the user associated with the passport.
           else {
-            // If the tokens have changed since the last session, update them
-            if (_.has(query, 'tokens') && query.tokens != passport.tokens) {
-              passport.tokens = query.tokens;
-            }
-
-            // Save any updates to the Passport before moving on
-            return sails.models.passport.update(passport.id, passport)
-              .then(function () {
-
-                // Fetch the user associated with the Passport
-                return sails.services.authservice.findUser({id: passport.user});
-              })
-              .then(function (user) {
-                next(null, user);
-              })
-              .catch(next);
+            // maybe update passport
+            return new Promise((resolve, reject) => {
+              // have tokens changed since last login?
+              if (_.has(query, 'tokens') && query.tokens != passport.tokens) {
+                // yes, update them
+                return sails.models.passport
+                  .update(passport.id, {tokens: query.tokens})
+                  .meta({fetch: true})
+                  .then((result) => {
+                    if (_.isArray(result) && result.length > 0) {
+                      return resolve(result[0])
+                    } else {
+                      return reject(new Error('Something went terribly wrong while update passport tokens.'));
+                    }
+                  }).catch(reject);
+              } else {
+                return resolve(passport);
+              }
+            }).then((passport) => {
+              // Fetch the user associated with the Passport
+              return sails.services.authservice.findUser({id: passport.user});
+            }).then((user) => {
+              // all done
+              return next(null, user);
+            }).catch(next);
           }
         } else {
           // Scenario: A user is currently logged in and trying to connect a new
