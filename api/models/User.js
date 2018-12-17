@@ -34,6 +34,10 @@ module.exports = {
     passports: {
       collection: 'Passport',
       via: 'user'
+    },
+    passwordResetToken: {
+      collection: "PasswordResetToken",
+      via: 'user'
     }
 
   },
