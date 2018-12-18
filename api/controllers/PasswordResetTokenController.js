@@ -111,7 +111,9 @@ function createToken(user) {
   })
   .then(() => {
     // create new token
-    return PasswordResetToken.create({user: user.id});
+    return PasswordResetToken
+      .create({user: user.id})
+      .fetch();
   });
 }
 
