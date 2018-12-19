@@ -86,10 +86,7 @@ module.exports = {
       .then((token) => {
 
         if (token) {
-          let now = new Date();
-          let expires = new Date(token.expiresAt);
-
-          if (now < expires) {
+          if (false === tokenIsExpired(token)) {
             return updatePassword(token, password)
               .then((user) => {
                 return PasswordResetToken.NotifyPasswordChanged(user);
