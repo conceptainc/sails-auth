@@ -3,6 +3,10 @@ let _ = require('lodash');
 
 module.exports = {
 
+  find: (req, res) => {
+    return res.status(403).send();
+  },
+
   findOne: (req, res) => {
     return PasswordResetToken
       .findOne({id: req.param('id')})
@@ -114,6 +118,10 @@ module.exports = {
         return res.status(500).send();
       });
 
+  },
+
+  destroy: (req, res) => {
+    return res.status(403).send();
   },
 
 };
