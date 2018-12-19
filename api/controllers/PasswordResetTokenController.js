@@ -3,6 +3,30 @@ let _ = require('lodash');
 
 module.exports = {
 
+  findOne: (req, res) => {
+    return PasswordResetToken
+      .findOne({id: req.param('id')})
+      .then((token) => {
+        if (token) {
+          if (false === tokenIsExpired(token)) {
+            return res.status(200).send();
+          } else {
+            return res
+              .status(403)
+              .send({
+                message: 'Token is expired.'
+              });
+          }
+        } else {
+          return res.status(400).send();
+        }
+      })
+      .catch((err) => {
+        sails.log.error(err);
+        return res.status(500).send();
+      });
+  },
+
   create: (req, res) => {
 
     // email is required
@@ -136,4 +160,11 @@ function updatePassword(token, password) {
       });
   });
 
+}
+
+function tokenIsExpired(token) {
+  let now = new Date();
+  let expires = new Date(token.expiresAt);
+
+  return (now >= expires);
 }
