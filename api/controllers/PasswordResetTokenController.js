@@ -50,7 +50,7 @@ module.exports = {
               return PasswordResetToken.NotifyTokenCreated(user, token);
             })
             .then(() => {
-              return res.status(200).send({email: user.email});
+              return res.status(200).send();
             });
         } else {
           return res
