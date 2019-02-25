@@ -39,6 +39,7 @@
   },
   "homepage": "https://github.com/conceptainc/sails-hook-auth",
   "dependencies": {
+    "@inspire-platform/owasp-password-strength-test": "2.0.0",
     "base64url": "^2.0.0",
     "bcryptjs": "^2.2",
     "lodash": "^4.16",

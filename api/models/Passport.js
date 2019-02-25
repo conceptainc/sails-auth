@@ -1,4 +1,7 @@
+var _ = require('lodash');
 var bcrypt = require('bcryptjs');
+var OwaspPST = require('@inspire-platform/owasp-password-strength-test');
+var SAError = require('../../../lib/error/SAError.js');
 
 /**
  * Hash a passport password.
@@ -110,6 +113,56 @@ var Passport = {
    */
   validatePassword: function (passport, password, next) {
     bcrypt.compare(password, passport.password, next);
+  },
+
+  /**
+   * Check password strength.
+   *
+   * @param {string} password
+   * @param {Object} user
+   * @param {Function} next
+   */
+  checkPasswordStrength: function (password, user, next) {
+
+    // get password config
+    var config = sails.config.auth.password;
+    var owasp = new OwaspPST(config.owasp);
+
+    // any user properties to scan for?
+    if (config.userAttributeScan.length) {
+      config.userAttributeScan.forEach((scan) => {
+        owasp.tests.required.push((password) => {
+          if (true === _.has(user, scan.attribute)) {
+            var re = new RegExp(user[scan.attribute], 'i');
+            if (true === re.test(password)) {
+              return `Password must not contain the value of the ${scan.description}.`;
+            }
+          }
+        });
+      });
+    }
+
+    var result = owasp.test(password);
+
+    if (result.errors.length === 0) {
+      return next();
+    } else {
+
+      let error = new Error();
+
+      error.invalidAttributes = {
+        password:
+          result.errors.map((msg) => {
+            return {
+              rule: 'owasp',
+              message: msg
+            }
+          })
+      };
+
+      return next(new SAError({message: 'Password is not strong enough', name: 'UsageError',originalError: error}));
+    }
+
   },
 
   /**
