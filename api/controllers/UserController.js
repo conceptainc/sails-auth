@@ -39,11 +39,15 @@ module.exports = {
         switch (err.name) {
           case 'AdapterError':
             switch (err.code) {
-              case 'E_UNIQUE': return res.badRequest(err);
-              default: return res.serverError(err);
+              case 'E_UNIQUE':
+                return res.badRequest(err);
+              default:
+                return res.serverError(err);
             } return;
-          case 'UsageError': return res.badRequest(err);
-          default: return res.serverError(err);
+          case 'UsageError':
+            return res.badRequest(err);
+          default:
+            return res.serverError(err);
         }
       }
 

@@ -43,39 +43,49 @@ exports.createUser = function (_user, next) {
   var password = _user.password;
   delete _user.password;
 
-  return sails.models.user.create(_user, function (err, user) {
-    if (err) {
-      sails.log(err);
+  Passport.checkPasswordStrength(password, _user, (err) => {
 
-      if (err.code === 'E_VALIDATION') {
-        return next(new SAError({originalError: err}));
-      }
-      
+    if (err) {
       return next(err);
+    } else {
+
+      return sails.models.user.create(_user, function (err, user) {
+        if (err) {
+          sails.log(err);
+
+          if (err.code === 'E_VALIDATION') {
+            return next(new SAError({originalError: err}));
+          }
+
+          return next(err);
+        }
+
+        sails.models.passport.create({
+          protocol : 'local'
+          , password : password
+          , user     : user.id
+          , accessToken: accessToken
+        }, function (err) {
+          if (err) {
+            if (err.code === 'E_VALIDATION') {
+              err = new SAError({originalError: err});
+            }
+
+            return User.destroy(
+              {id: user.id},
+              function (destroyErr) {
+                next(destroyErr || err);
+              }
+            );
+          }
+
+          next(null, user);
+        });
+      }, {fetch: true});
     }
 
-    sails.models.passport.create({
-      protocol : 'local'
-    , password : password
-    , user     : user.id
-    , accessToken: accessToken
-    }, function (err) {
-      if (err) {
-        if (err.code === 'E_VALIDATION') {
-          err = new SAError({originalError: err});
-        }
-        
-        return User.destroy(
-          {id: user.id},
-          function (destroyErr) {
-            next(destroyErr || err);
-          }
-        );
-      }
+  });
 
-      next(null, user);
-    });
-  }, {fetch: true});
 };
 
 /**
@@ -107,29 +117,42 @@ exports.updateUser = function (_user, next) {
 
       return next(err);
     }
+
     // Update retrieves an array
     user = user[0];
+
     // Check if password has a string to replace it
     if (!!password) {
-      sails.models.passport.findOne({
-        protocol : 'local'
-        ,user:user.id
-      }, function(err, passport){
-        Passport
-          .update({id: passport.id}, {password: password})
-          .exec(function (err) {
-            if (err) {
-              if (err.code === 'E_VALIDATION') {
-                err = new SAError({ originalError: err });
-              }
 
-              next(err);
+      Passport.checkPasswordStrength(password, user, (err) => {
 
-            }
+        if (err) {
+          return next(err);
+        } else {
 
-            next(null, user);
-          })
+          sails.models.passport.findOne({
+            protocol : 'local'
+            ,user:user.id
+          }, function(err, passport){
+            Passport
+              .update({id: passport.id}, {password: password})
+              .exec(function (err) {
+                if (err) {
+                  if (err.code === 'E_VALIDATION') {
+                    err = new SAError({ originalError: err });
+                  }
+
+                  next(err);
+
+                }
+
+                next(null, user);
+              })
+          });
+
+        }
       });
+
     } else {
       next(null, user);
     }
@@ -161,15 +184,23 @@ exports.connect = function (req, res, next) {
     }
 
     if (!passport) {
-      Passport.create({
-        protocol : 'local'
-      , password : password
-      , user     : user.id
-      }, function (err) {
-        next(err, user);
+
+      Passport.checkPasswordStrength(password, user, (err) => {
+
+        if (err) {
+          return next(err);
+        } else {
+          Passport.create({
+            protocol: 'local'
+            , password: password
+            , user: user.id
+          }, function (err) {
+            next(err, user);
+          });
+        }
       });
-    }
-    else {
+
+    } else {
       next(null, user);
     }
   });
