@@ -1,7 +1,8 @@
 var _ = require('lodash');
 var bcrypt = require('bcryptjs');
 var OwaspPST = require('@inspire-platform/owasp-password-strength-test');
-var SAError = require('../../../lib/error/SAError.js');
+var SAError = require('../../lib/error/SAError.js');
+var SAPassportLockedError = require('../../lib/error/SAPassportLockedError.js');
 
 /**
  * Hash a passport password.
@@ -75,6 +76,10 @@ var Passport = {
     // accessToken is used to authenticate API requests. it is generated when a
     // passport (with protocol 'local') is created for a user.
     accessToken: { type: 'string' },
+    // number of failed login attempts since last successful local login
+    lockoutAttempts: {type: 'number', defaultsTo: 0},
+    // timestamp that lockout started
+    lockoutSince: {type: 'number', allowNull: true},
 
     // Provider fields: Provider, identifer and tokens
     //
@@ -112,7 +117,115 @@ var Passport = {
    * @param {Function} next
    */
   validatePassword: function (passport, password, next) {
-    bcrypt.compare(password, passport.password, next);
+
+    // get password config
+    var config = sails.config.auth.password;
+
+    // lockout disabled?
+    if (config.lockout.enable !== true) {
+      // yes, just check the password
+      return bcrypt.compare(password, passport.password, next);
+    }
+
+    this
+      .isLocked(passport)
+      .then(() => {
+        // not locked out OR lock expired, need to check password
+        return bcrypt.compare(password, passport.password);
+      })
+      .then((result) => {
+
+        let data = {
+          lockoutAttempts: 0,
+          lockoutSince: null
+        };
+
+        // password is valid?
+        if (result !== true) {
+          // invalid password, :(
+          // coming off a lockout, and still not getting it right?
+          if (passport.lockoutSince) {
+            // yes... reset fields to give more attempts
+            data.lockoutAttempts = 1;
+            data.lockoutSince = null;
+          } else {
+            // increment failed attempts.
+            data.lockoutAttempts = passport.lockoutAttempts + 1
+            // lock them out?
+            if (config.lockout.attempts <= data.lockoutAttempts) {
+              data.lockoutSince = new Date();
+            }
+          }
+        }
+
+        // update it
+        var updatePassport = this
+          .update({id: passport.id}, data)
+          .fetch()
+          .then((passports) => {
+            return passports[0];
+          });
+
+        return Promise.all([
+          result,
+          updatePassport
+        ]);
+
+      })
+      .then((results) => {
+
+        var authenticated = results[0];
+        var passport = results[1];
+
+        // check if this attempt resulted in a lock
+        return this
+          .isLocked(passport)
+          .then(() => {
+            // not locked
+            return next(null, authenticated);
+          });
+      })
+      .catch(next);
+
+  },
+
+  isLocked: function (passport) {
+
+    // get password config
+    var config = sails.config.auth.password;
+
+    return new Promise((resolve, reject) => {
+
+      // is passport locked out?
+      if (passport.lockoutSince) {
+
+        try {
+          var dateNow = new Date();
+          var lockoutSince = new Date(passport.lockoutSince);
+          var lockoutExpires = new Date(lockoutSince.getTime() + config.lockout.wait * 1000);
+        } catch (e) {
+          return reject(e);
+        }
+
+        // lockout still in effect?
+        if (dateNow < lockoutExpires) {
+
+          // still locked out
+          var error = new SAPassportLockedError({
+            since: lockoutSince,
+            expires: lockoutExpires,
+            attempts: passport.lockoutAttempts,
+          });
+
+          return reject(error);
+        }
+
+      }
+
+      return resolve();
+
+    });
+
   },
 
   /**
@@ -182,6 +295,13 @@ var Passport = {
    * @param {Function} next
    */
   beforeUpdate: function (passport, next) {
+
+    // reset lockout fields if password is being changed
+    if (passport.password) {
+      passport.lockoutAttempts = 0;
+      passport.lockoutSince = null;
+    }
+
     hashPassword(passport, next);
   }
 };
