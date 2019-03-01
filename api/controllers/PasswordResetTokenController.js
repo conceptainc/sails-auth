@@ -148,20 +148,26 @@ function createToken(user) {
 
 function updatePassword(token, password) {
 
-  // destroy token first
-  return PasswordResetToken
-    .destroy({id: token.id})
-    .then(() => {
-      // update user password
       return new Promise((resolve, reject) => {
+    // try to update user password
         return sails.services.passport.protocols.local
           .update({
             id: token.user.id,
             password: password
           },
           function (err, user) {
-            return (err) ? reject(err) : resolve(user);
-          });
+        // error?
+        if (err) {
+          return reject(err);
+        } else {
+          // password updated, destroy token
+          return PasswordResetToken
+            .destroy({id: token.id})
+            .then(() => {
+              return resolve(user);
+            })
+            .catch(reject);
+        }
       });
   });
 
