@@ -115,7 +115,11 @@ module.exports = {
       })
       .catch((cause) => {
         sails.log.error(cause);
-        return res.status(500).send();
+        var status = cause.status || 500;
+        if (status === 400) {
+          return res.badRequest(cause);
+        }
+        return res.status(status).send();
       });
 
   },
@@ -148,14 +152,14 @@ function createToken(user) {
 
 function updatePassword(token, password) {
 
-      return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     // try to update user password
-        return sails.services.passport.protocols.local
-          .update({
-            id: token.user.id,
-            password: password
-          },
-          function (err, user) {
+    return sails.services.passport.protocols.local
+      .update({
+        id: token.user.id,
+        password: password
+      },
+      function (err, user) {
         // error?
         if (err) {
           return reject(err);
