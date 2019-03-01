@@ -43,11 +43,9 @@ exports.createUser = function (_user, next) {
   var password = _user.password;
   delete _user.password;
 
-  Passport.checkPasswordStrength(password, _user, (err) => {
-
-    if (err) {
-      return next(err);
-    } else {
+  Passport
+    .checkPasswordStrength(password, _user)
+    .then(() => {
 
       return sails.models.user.create(_user, function (err, user) {
         if (err) {
@@ -82,9 +80,9 @@ exports.createUser = function (_user, next) {
           next(null, user);
         });
       }, {fetch: true});
-    }
 
-  });
+    })
+    .catch(next);
 
 };
 
@@ -124,11 +122,9 @@ exports.updateUser = function (_user, next) {
     // Check if password has a string to replace it
     if (!!password) {
 
-      Passport.checkPasswordStrength(password, user, (err) => {
-
-        if (err) {
-          return next(err);
-        } else {
+      Passport
+        .checkPasswordStrength(password, user)
+        .then(() => {
 
           sails.models.passport.findOne({
             protocol : 'local'
@@ -141,17 +137,14 @@ exports.updateUser = function (_user, next) {
                   if (err.code === 'E_VALIDATION') {
                     err = new SAError({ originalError: err });
                   }
-
                   next(err);
-
                 }
 
                 next(null, user);
               })
           });
-
-        }
-      });
+        })
+        .catch(next);
 
     } else {
       next(null, user);
@@ -185,11 +178,9 @@ exports.connect = function (req, res, next) {
 
     if (!passport) {
 
-      Passport.checkPasswordStrength(password, user, (err) => {
-
-        if (err) {
-          return next(err);
-        } else {
+      Passport
+        .checkPasswordStrength(password, user)
+        .then(() => {
           Passport.create({
             protocol: 'local'
             , password: password
@@ -197,13 +188,14 @@ exports.connect = function (req, res, next) {
           }, function (err) {
             next(err, user);
           });
-        }
-      });
+        })
+        .catch(next);
 
     } else {
       next(null, user);
     }
   });
+
 };
 
 /**
