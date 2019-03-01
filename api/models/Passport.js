@@ -233,48 +233,50 @@ var Passport = {
    *
    * @param {string} password
    * @param {Object} user
-   * @param {Function} next
    */
-  checkPasswordStrength: function (password, user, next) {
+  checkPasswordStrength: function (password, user) {
 
-    // get password config
-    var config = sails.config.auth.password;
-    var owasp = new OwaspPST(config.owasp);
+    return new Promise((resolve, reject) => {
 
-    // any user properties to scan for?
-    if (config.userAttributeScan.length) {
-      config.userAttributeScan.forEach((scan) => {
-        owasp.tests.required.push((password) => {
-          if (true === _.has(user, scan.attribute)) {
-            var re = new RegExp(user[scan.attribute], 'i');
-            if (true === re.test(password)) {
-              return `Password must not contain the value of the ${scan.description}.`;
+      // get password config
+      var config = sails.config.auth.password;
+      var owasp = new OwaspPST(config.owasp);
+
+      // any user properties to scan for?
+      if (config.userAttributeScan.length) {
+        config.userAttributeScan.forEach((scan) => {
+          owasp.tests.required.push((password) => {
+            if (true === _.has(user, scan.attribute)) {
+              var re = new RegExp(user[scan.attribute], 'i');
+              if (true === re.test(password)) {
+                return `Password must not contain the value of the ${scan.description}.`;
+              }
             }
-          }
+          });
         });
-      });
-    }
+      }
 
-    var result = owasp.test(password);
+      var result = owasp.test(password);
 
-    if (result.errors.length === 0) {
-      return next();
-    } else {
+      if (result.errors.length === 0) {
+        return resolve(true);
+      } else {
 
-      let error = new Error();
+        let error = new Error();
 
-      error.invalidAttributes = {
-        password:
-          result.errors.map((msg) => {
-            return {
-              rule: 'owasp',
-              message: msg
-            }
-          })
-      };
+        error.invalidAttributes = {
+          password:
+            result.errors.map((msg) => {
+              return {
+                rule: 'owasp',
+                message: msg
+              }
+            })
+        };
 
-      return next(new SAError({message: 'Password is not strong enough', name: 'UsageError',originalError: error}));
-    }
+        return reject(new SAError({message: 'Password is not strong enough', name: 'UsageError', originalError: error}));
+      }
+    });
 
   },
 
