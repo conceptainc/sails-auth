@@ -21,10 +21,17 @@ module.exports.passport = {
   },
 
   /*
+
+  totp: {
+    strategy: require('passport-local-token').Strategy,
+    protocol: 'totp'
+  },
+
   bearer: {
     strategy: require('passport-http-bearer').Strategy,
     protocol: 'bearer'
   },
+
   google: {
     name: 'Google',
     protocol: 'oauth2',
