@@ -18,5 +18,6 @@ module.exports = {
   oauth: require('./oauth'),
   oauth2: require('./oauth2'),
   openid: require('./openid'),
-  delegated: require('./delegated')
+  delegated: require('./delegated'),
+  totp: require('./totp'),
 };

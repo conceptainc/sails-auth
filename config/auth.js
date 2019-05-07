@@ -40,6 +40,16 @@ module.exports.auth = {
       attempts: 3,
       // lockout duration in whole seconds
       wait: 300
+    },
+
+    /**
+     * Two factor authentication configuration
+     */
+    twoFactor: {
+      protocols: ['totp'],
+      verify: (user, token, next) => {
+        return next(new Error(`Two factor verify callback must be implemented`));
+      }
     }
 
   },
