@@ -21,6 +21,7 @@ module.exports = {
     req.logout();
     delete req.user;
     delete req.session.passport;
+    req.session.secondFactor = null;
     req.session.authenticated = false;
 
     if (!req.isSocket && req.query.next) {
