@@ -36,9 +36,6 @@ module.exports = function (req, token, next) {
       // second factor successful
       return next(null, req.user);
     } else {
-      // second factor failed (revoke existing auth just in case)
-      req.session.authenticated = false;
-      req.session.secondFactor = null;
       // not authorized
       return next();
     }
