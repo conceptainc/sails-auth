@@ -47,6 +47,7 @@ module.exports.auth = {
      */
     twoFactor: {
       protocols: ['totp'],
+      revokeOnLogout: false,
       verify: (user, token, next) => {
         return next(new Error(`Two factor verify callback must be implemented`));
       }

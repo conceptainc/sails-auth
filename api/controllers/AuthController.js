@@ -21,8 +21,16 @@ module.exports = {
     req.logout();
     delete req.user;
     delete req.session.passport;
-    req.session.secondFactor = null;
     req.session.authenticated = false;
+
+    // revoke second factor on logout?
+    if (
+      true === 'twoFactor' in sails.config.auth &&
+      true === 'revokeOnLogout' in sails.config.auth.twoFactor &&
+      true === sails.config.auth.twoFactor.revokeOnLogout
+    ) {
+      req.session.secondFactor = null;
+    }
 
     if (!req.isSocket && req.query.next) {
       res.redirect(req.query.next);
